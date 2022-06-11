@@ -24,6 +24,14 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+app.get('/api', (req,res) => {
+  const dateToday = new Date();
+  return res.status(200).json({
+    unix : Date.parse(dateToday),
+    utc : dateToday.toUTCString()    
+  });
+});
+
 // API endpoint for dates
 app.get('/api/:date', (req,res) => {
   const isoParsed = new Date(req.params.date);
@@ -31,12 +39,18 @@ app.get('/api/:date', (req,res) => {
 
   const dateParsed = isoParsed != 'Invalid Date' ? isoParsed : 
     ( unixParsed != 'Invalid Date' ? unixParsed
-    : new Date());
+    : false);
 
-  return res.json({
-    unix : Date.parse(dateParsed),
-    utc : dateParsed.toUTCString()
-  });
+  if (dateParsed) {
+    return res.status(200).json({
+      unix : Date.parse(dateParsed),
+      utc : dateParsed.toUTCString()
+    });
+  }
+
+  else {
+    return res.status(400).json({ error : 'Invalid Date' })
+  }
 
 });
 
