@@ -24,9 +24,24 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+// API endpoint for dates
+app.get('/api/:date', (req,res) => {
+  const isoParsed = new Date(req.params.date);
+  const unixParsed = new Date(Number(req.params.date));
+
+  const dateParsed = isoParsed != 'Invalid Date' ? isoParsed : 
+    ( unixParsed != 'Invalid Date' ? unixParsed
+    : new Date());
+
+  return res.json({
+    unix : Date.parse(dateParsed),
+    utc : dateParsed.toUTCString()
+  });
+
+});
 
 
 // listen for requests :)
-var listener = app.listen(process.env.PORT, function () {
+var listener = app.listen(3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
